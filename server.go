@@ -7,10 +7,17 @@ import (
 	"net/rpc"
 
 	"github.com/atotto/clipboard"
+	"github.com/pocke/go-iprange"
 	"github.com/skratchdot/open-golang/open"
 )
 
 func (c *CLI) Server() int {
+	ra, err := iprange.New(c.Allow)
+	if err != nil {
+		c.writeError(err)
+		return RPCError
+	}
+
 	uri := &URI{}
 	rpc.Register(uri)
 	clipboard := &Clipboard{}
@@ -33,6 +40,9 @@ func (c *CLI) Server() int {
 			log.Println(err)
 		}
 		log.Printf("Request from %s", conn.RemoteAddr())
+		if !ra.InlucdeConn(conn) {
+			continue
+		}
 		rpc.ServeConn(conn)
 	}
 	return Success
