@@ -15,6 +15,7 @@ const (
 const (
 	Success        = 0
 	FlagParseError = iota + 10
+	RPCError
 )
 
 type CommandStyle int
@@ -43,5 +44,20 @@ func (c *CLI) Do(args []string) int {
 		return FlagParseError
 	}
 
-	return Success
+	switch c.Type {
+	case OPEN:
+		return c.Open()
+	case COPY:
+		return c.Copy()
+	case PASTE:
+		return c.Paste()
+	case SERVER:
+		return c.Server()
+	default:
+		panic("")
+	}
+}
+
+func (c *CLI) writeError(err error) {
+	c.Err.Write([]byte(err.Error()))
 }
