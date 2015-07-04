@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -66,14 +67,24 @@ func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
 			return
 		}
 	}
-	return s, fmt.Errorf("Unknown subcommand")
+
+	flags := c.flags()
+	w := bytes.NewBuffer([]byte("Unknown SubCommand\n\nUsage of lemonade:\n"))
+	flags.SetOutput(w)
+	flags.PrintDefaults()
+	return s, fmt.Errorf(w.String())
 }
 
-func (c *CLI) parse(args []string) error {
+func (c *CLI) flags() *flag.FlagSet {
 	flags := flag.NewFlagSet("lemonade", flag.ContinueOnError)
 	flags.IntVar(&c.Port, "port", 2489, "TCP port number")
 	flags.StringVar(&c.Allow, "allow", "0.0.0.0/0,::0", "Allow IP range")
 	flags.StringVar(&c.Host, "host", "localhost", "Destination host name.")
+	return flags
+}
+
+func (c *CLI) parse(args []string) error {
+	flags := c.flags()
 
 	confPath, err := homedir.Expand("~/.config/lemonade.toml")
 	if err == nil {
