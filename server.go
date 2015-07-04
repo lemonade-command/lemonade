@@ -32,6 +32,7 @@ func (c *CLI) Server() int {
 		if err != nil {
 			log.Println(err)
 		}
+		log.Printf("Request from %s", conn.RemoteAddr())
 		rpc.ServeConn(conn)
 	}
 	return Success
