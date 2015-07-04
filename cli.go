@@ -40,7 +40,7 @@ type CLI struct {
 
 func (c *CLI) Do(args []string) int {
 	if err := c.FlagParse(args); err != nil {
-		c.Err.Write([]byte(err.Error()))
+		c.writeError(err)
 		return FlagParseError
 	}
 
@@ -60,4 +60,5 @@ func (c *CLI) Do(args []string) int {
 
 func (c *CLI) writeError(err error) {
 	c.Err.Write([]byte(err.Error()))
+	c.Err.Write([]byte{'\n'})
 }

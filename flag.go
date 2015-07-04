@@ -95,5 +95,4 @@ func (c *CLI) parse(args []string) {
 		b, _ := ioutil.ReadAll(c.In)
 		c.DataSource = string(b)
 	}
-	return
 }

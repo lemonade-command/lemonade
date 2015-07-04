@@ -51,6 +51,6 @@ func (_ *Clipboard) Copy(text string, _ *struct{}) error {
 
 func (_ *Clipboard) Paste(_ struct{}, resp *string) error {
 	t, err := clipboard.ReadAll()
-	resp = &t
+	*resp = t
 	return err
 }
