@@ -69,6 +69,5 @@ func (c *CLI) Do(args []string) int {
 }
 
 func (c *CLI) writeError(err error) {
-	c.Err.Write([]byte(err.Error()))
-	c.Err.Write([]byte{'\n'})
+	fmt.Fprintln(c.Err, err.Error())
 }
