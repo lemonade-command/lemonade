@@ -8,5 +8,5 @@ func main() {
 		Out: os.Stdout,
 		Err: os.Stderr,
 	}
-	c.FlagParse(os.Args)
+	os.Exit(c.Do(os.Args))
 }

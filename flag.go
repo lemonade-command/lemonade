@@ -12,7 +12,6 @@ import (
 func (c *CLI) FlagParse(args []string) error {
 	style, err := c.getCommandType(args)
 	if err != nil {
-		c.Err.Write([]byte(err.Error()))
 		return err
 	}
 	if style == SUBCOMMAND {

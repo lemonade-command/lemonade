@@ -12,6 +12,11 @@ const (
 	SERVER
 )
 
+const (
+	Success        = 0
+	FlagParseError = iota + 10
+)
+
 type CommandStyle int
 
 const (
@@ -30,4 +35,13 @@ type CLI struct {
 	Port  int
 	Allow string
 	Host  string
+}
+
+func (c *CLI) Do(args []string) int {
+	if err := c.FlagParse(args); err != nil {
+		c.Err.Write([]byte(err.Error()))
+		return FlagParseError
+	}
+
+	return Success
 }
