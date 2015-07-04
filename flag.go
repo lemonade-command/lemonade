@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -19,12 +18,7 @@ func (c *CLI) FlagParse(args []string) error {
 		args = args[:len(args)-1]
 	}
 
-	err = c.parse(args)
-	if err == flag.ErrHelp {
-		c.Help = true
-		return nil
-	}
-	return err
+	return c.parse(args)
 }
 
 func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
@@ -68,11 +62,7 @@ func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
 		}
 	}
 
-	flags := c.flags()
-	w := bytes.NewBuffer([]byte("Unknown SubCommand\n\nUsage of lemonade:\n"))
-	flags.SetOutput(w)
-	flags.PrintDefaults()
-	return s, fmt.Errorf(w.String())
+	return s, fmt.Errorf("Unknown SubCommand\n\n" + Usage)
 }
 
 func (c *CLI) flags() *flag.FlagSet {
@@ -80,6 +70,7 @@ func (c *CLI) flags() *flag.FlagSet {
 	flags.IntVar(&c.Port, "port", 2489, "TCP port number")
 	flags.StringVar(&c.Allow, "allow", "0.0.0.0/0,::0", "Allow IP range")
 	flags.StringVar(&c.Host, "host", "localhost", "Destination host name.")
+	flags.BoolVar(&c.Help, "help", false, "Show this message")
 	return flags
 }
 
@@ -111,6 +102,10 @@ func (c *CLI) parse(args []string) error {
 
 	}
 
+	if c.Help {
+		return nil
+	}
+
 	if arg != "" {
 		c.DataSource = arg
 	} else {
@@ -120,5 +115,6 @@ func (c *CLI) parse(args []string) error {
 		}
 		c.DataSource = string(b)
 	}
+
 	return nil
 }

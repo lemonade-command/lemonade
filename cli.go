@@ -1,6 +1,9 @@
 package main
 
-import "io"
+import (
+	"fmt"
+	"io"
+)
 
 type CommandType int
 
@@ -16,6 +19,7 @@ const (
 	Success        = 0
 	FlagParseError = iota + 10
 	RPCError
+	Help
 )
 
 type CommandStyle int
@@ -46,7 +50,8 @@ func (c *CLI) Do(args []string) int {
 		return FlagParseError
 	}
 	if c.Help {
-		return Success
+		fmt.Fprint(c.Err, Usage)
+		return Help
 	}
 
 	switch c.Type {
