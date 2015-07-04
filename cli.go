@@ -30,7 +30,7 @@ type CLI struct {
 	Out, Err io.Writer
 
 	Type       CommandType
-	DataSource io.Reader
+	DataSource string
 
 	// options
 	Port  int

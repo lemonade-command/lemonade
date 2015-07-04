@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"strings"
+	"io/ioutil"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/monochromegane/conflag"
@@ -89,9 +89,11 @@ func (c *CLI) parse(args []string) {
 		flags.Parse(flags.Args()[1:])
 	}
 	if arg != "" {
-		c.DataSource = strings.NewReader(arg)
+		c.DataSource = arg
 	} else {
-		c.DataSource = c.In
+		// TODO: error handling
+		b, _ := ioutil.ReadAll(c.In)
+		c.DataSource = string(b)
 	}
 	return
 }

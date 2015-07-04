@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 	"reflect"
-	"strings"
 	"testing"
 )
 
@@ -27,15 +26,14 @@ func TestCLIParse(t *testing.T) {
 		Host:       defaultHost,
 		Port:       defaultPort,
 		Allow:      defaultAllow,
-		DataSource: strings.NewReader("http://example.com"),
+		DataSource: "http://example.com",
 	})
 
 	assert([]string{"xdg-open"}, CLI{
-		Type:       OPEN,
-		Host:       defaultHost,
-		Port:       defaultPort,
-		Allow:      defaultAllow,
-		DataSource: os.Stdin,
+		Type:  OPEN,
+		Host:  defaultHost,
+		Port:  defaultPort,
+		Allow: defaultAllow,
 	})
 
 	assert([]string{"pbpaste", "--port", "1124"}, CLI{
@@ -50,7 +48,7 @@ func TestCLIParse(t *testing.T) {
 		Host:       defaultHost,
 		Port:       defaultPort,
 		Allow:      defaultAllow,
-		DataSource: strings.NewReader("hogefuga"),
+		DataSource: "hogefuga",
 	})
 
 	assert([]string{"lemonade", "--host", "192.168.0.1", "--port", "1124", "open", "http://example.com"}, CLI{
@@ -58,7 +56,7 @@ func TestCLIParse(t *testing.T) {
 		Host:       "192.168.0.1",
 		Port:       1124,
 		Allow:      defaultAllow,
-		DataSource: strings.NewReader("http://example.com"),
+		DataSource: "http://example.com",
 	})
 
 	assert([]string{"lemonade", "copy", "hogefuga"}, CLI{
@@ -66,7 +64,7 @@ func TestCLIParse(t *testing.T) {
 		Host:       defaultHost,
 		Port:       defaultPort,
 		Allow:      defaultAllow,
-		DataSource: strings.NewReader("hogefuga"),
+		DataSource: "hogefuga",
 	})
 
 	assert([]string{"lemonade", "paste"}, CLI{
