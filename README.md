@@ -14,7 +14,7 @@ Installation
 go get github.com/pocke/lemonade
 ```
 
-~~Or download from latest release~~ (TODO)
+Or download from [latest release](https://github.com/pocke/lemonade/releases/latest)
 
 
 Usage
