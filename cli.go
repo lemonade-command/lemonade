@@ -36,12 +36,17 @@ type CLI struct {
 	Port  int
 	Allow string
 	Host  string
+
+	Help bool
 }
 
 func (c *CLI) Do(args []string) int {
 	if err := c.FlagParse(args); err != nil {
 		c.writeError(err)
 		return FlagParseError
+	}
+	if c.Help {
+		return Success
 	}
 
 	switch c.Type {

@@ -18,9 +18,12 @@ func (c *CLI) FlagParse(args []string) error {
 		args = args[:len(args)-1]
 	}
 
-	c.parse(args)
-
-	return nil
+	err = c.parse(args)
+	if err == flag.ErrHelp {
+		c.Help = true
+		return nil
+	}
+	return err
 }
 
 func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
@@ -66,7 +69,7 @@ func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
 	return s, fmt.Errorf("Unknown subcommand")
 }
 
-func (c *CLI) parse(args []string) {
+func (c *CLI) parse(args []string) error {
 	flags := flag.NewFlagSet("lemonade", flag.ContinueOnError)
 	flags.IntVar(&c.Port, "port", 2489, "TCP port number")
 	flags.StringVar(&c.Allow, "allow", "0.0.0.0/0,::0", "Allow IP range")
@@ -80,19 +83,31 @@ func (c *CLI) parse(args []string) {
 	}
 
 	var arg string
-	flags.Parse(args[1:])
-	if c.Type == PASTE || c.Type == SERVER {
-		return
+	err = flags.Parse(args[1:])
+	if err != nil {
+		return err
 	}
+	if c.Type == PASTE || c.Type == SERVER {
+		return nil
+	}
+
 	for 0 < flags.NArg() {
 		arg = flags.Arg(0)
-		flags.Parse(flags.Args()[1:])
+		err := flags.Parse(flags.Args()[1:])
+		if err != nil {
+			return err
+		}
+
 	}
+
 	if arg != "" {
 		c.DataSource = arg
 	} else {
-		// TODO: error handling
-		b, _ := ioutil.ReadAll(c.In)
+		b, err := ioutil.ReadAll(c.In)
+		if err != nil {
+			return err
+		}
 		c.DataSource = string(b)
 	}
+	return nil
 }
