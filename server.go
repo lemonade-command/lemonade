@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"net/rpc"
+	"net/url"
 
 	"github.com/atotto/clipboard"
 	"github.com/pocke/go-iprange"
@@ -53,9 +54,18 @@ func (c *CLI) Server() int {
 
 type URI struct{}
 
-func (_ *URI) Open(url string, _ *struct{}) error {
-	<-connCh
-	return open.Run(url)
+func (_ *URI) Open(u string, _ *struct{}) error {
+	conn := <-connCh
+	parsed, err := url.Parse(u)
+	if err != nil {
+		return err
+	}
+	if ip := net.ParseIP(parsed.Host); ip != nil {
+		if ip.IsLoopback() {
+			// TODO
+		}
+	}
+	return open.Run(u)
 }
 
 type Clipboard struct{}
