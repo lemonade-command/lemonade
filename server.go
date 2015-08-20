@@ -11,6 +11,8 @@ import (
 	"github.com/skratchdot/open-golang/open"
 )
 
+var connCh = make(chan net.Conn, 1)
+
 func (c *CLI) Server() int {
 	ra, err := iprange.New(c.Allow)
 	if err != nil {
@@ -43,6 +45,7 @@ func (c *CLI) Server() int {
 		if !ra.InlucdeConn(conn) {
 			continue
 		}
+		connCh <- conn
 		rpc.ServeConn(conn)
 	}
 	return Success
@@ -51,16 +54,19 @@ func (c *CLI) Server() int {
 type URI struct{}
 
 func (_ *URI) Open(url string, _ *struct{}) error {
+	<-connCh
 	return open.Run(url)
 }
 
 type Clipboard struct{}
 
 func (_ *Clipboard) Copy(text string, _ *struct{}) error {
+	<-connCh
 	return clipboard.WriteAll(text)
 }
 
 func (_ *Clipboard) Paste(_ struct{}, resp *string) error {
+	<-connCh
 	t, err := clipboard.ReadAll()
 	*resp = t
 	return err
