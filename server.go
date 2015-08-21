@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/rpc"
 	"net/url"
+	"regexp"
 
 	"github.com/atotto/clipboard"
 	"github.com/pocke/go-iprange"
@@ -54,18 +55,52 @@ func (c *CLI) Server() int {
 
 type URI struct{}
 
-func (_ *URI) Open(u string, _ *struct{}) error {
+func (u *URI) Open(uri string, _ *struct{}) error {
 	conn := <-connCh
-	parsed, err := url.Parse(u)
+	uri = u.translateLoopbackIP(uri, conn)
+	return open.Run(uri)
+}
+
+func IPv6RemoveBrackets(ip string) string {
+	if regexp.MustCompile(`^\[.+\]$`).MatchString(ip) {
+		return ip[1 : len(ip)-1]
+	}
+	return ip
+}
+
+func splitHostPort(hostPort string) []string {
+	portRe := regexp.MustCompile(`:(\d+)$`)
+	portSlice := portRe.FindStringSubmatch(hostPort)
+	if len(portSlice) == 0 {
+		return []string{IPv6RemoveBrackets(hostPort)}
+	}
+	port := portSlice[1]
+	host := hostPort[:len(hostPort)-len(port)-1]
+	return []string{IPv6RemoveBrackets(host), port}
+}
+
+func (_ *URI) translateLoopbackIP(uri string, conn net.Conn) string {
+	parsed, err := url.Parse(uri)
 	if err != nil {
-		return err
+		return uri
 	}
-	if ip := net.ParseIP(parsed.Host); ip != nil {
-		if ip.IsLoopback() {
-			// TODO
-		}
+	// 0: addr, 1: port
+	host := splitHostPort(parsed.Host)
+
+	ip := net.ParseIP(host[0])
+	if ip == nil || !ip.IsLoopback() {
+		return uri
 	}
-	return open.Run(u)
+
+	addr := conn.RemoteAddr().(*net.TCPAddr).IP.String()
+
+	if len(host) == 1 {
+		parsed.Host = addr
+	} else {
+		parsed.Host = fmt.Sprintf("%s:%s", addr, host[1])
+	}
+
+	return parsed.String()
 }
 
 type Clipboard struct{}
