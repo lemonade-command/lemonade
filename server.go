@@ -57,7 +57,9 @@ type URI struct{}
 
 func (u *URI) Open(uri string, _ *struct{}) error {
 	conn := <-connCh
-	uri = u.translateLoopbackIP(uri, conn)
+	if cli.TransLoopback {
+		uri = u.translateLoopbackIP(uri, conn)
+	}
 	return open.Run(uri)
 }
 

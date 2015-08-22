@@ -71,6 +71,7 @@ func (c *CLI) flags() *flag.FlagSet {
 	flags.StringVar(&c.Allow, "allow", "0.0.0.0/0,::0", "Allow IP range")
 	flags.StringVar(&c.Host, "host", "localhost", "Destination host name.")
 	flags.BoolVar(&c.Help, "help", false, "Show this message")
+	flags.BoolVar(&c.TransLoopback, "trans-loopback", true, "Translate loopback address")
 	return flags
 }
 
