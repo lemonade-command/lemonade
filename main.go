@@ -14,6 +14,7 @@ Options:
   --host="localhost"          Destination hostname       [Client only]
   --allow="0.0.0.0/0,::0"     Allow IP Range             [Server only]
   --trans-loopback=true       Translate loopback address [Server only]
+  --trans-localfile=true      Translate local file path  [Client only]
   --help                      Show this message
 `
 

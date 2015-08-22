@@ -37,10 +37,11 @@ type CLI struct {
 	DataSource string
 
 	// options
-	Port          int
-	Allow         string
-	Host          string
-	TransLoopback bool
+	Port           int
+	Allow          string
+	Host           string
+	TransLoopback  bool
+	TransLocalfile bool
 
 	Help bool
 }

@@ -44,7 +44,7 @@ func (c *CLI) Open() int {
 	var finished <-chan struct{}
 	st := c.withRPCClient(func(client *rpc.Client) error {
 		var uri string
-		if exists(c.DataSource) {
+		if c.TransLocalfile && exists(c.DataSource) {
 			var err error
 			uri, finished, err = serveFile(c.DataSource)
 			if err != nil {
