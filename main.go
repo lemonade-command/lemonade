@@ -11,10 +11,10 @@ Sub Commands:
 
 Options:
   --port=2489                 TCP port number
-  --host="localhost"          Destination hostname       [Client only]
   --allow="0.0.0.0/0,::0"     Allow IP Range             [Server only]
-  --trans-loopback=true       Translate loopback address [Server only]
-  --trans-localfile=true      Translate local file path  [Client only]
+  --host="localhost"          Destination hostname       [Client only]
+  --trans-loopback=true       Translate loopback address [open subcommand only]
+  --trans-localfile=true      Translate local file path  [open subcommand only]
   --help                      Show this message
 `
 
