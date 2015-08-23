@@ -18,11 +18,8 @@ Options:
   --help                      Show this message
 `
 
-// XXX: rpc 内で使うためにGlobalにしている
-var cli *CLI
-
 func main() {
-	cli = &CLI{
+	cli := &CLI{
 		In:  os.Stdin,
 		Out: os.Stdout,
 		Err: os.Stderr,

@@ -40,10 +40,17 @@ func serveFile(fname string) (string, <-chan struct{}, error) {
 	return fmt.Sprintf("http://127.0.0.1:%d/%s", l.Addr().(*net.TCPAddr).Port, fname), finished, nil
 }
 
+type OpenParam struct {
+	URI           string
+	TransLoopback bool
+}
+
 func (c *CLI) Open() int {
 	var finished <-chan struct{}
+
 	st := c.withRPCClient(func(client *rpc.Client) error {
 		var uri string
+
 		if c.TransLocalfile && exists(c.DataSource) {
 			var err error
 			uri, finished, err = serveFile(c.DataSource)
@@ -53,9 +60,14 @@ func (c *CLI) Open() int {
 		} else {
 			uri = c.DataSource
 		}
+		param := &OpenParam{
+			URI:           uri,
+			TransLoopback: c.TransLoopback || c.TransLocalfile,
+		}
 
-		return client.Call("URI.Open", uri, dummy)
+		return client.Call("URI.Open", param, dummy)
 	})
+
 	if finished != nil {
 		<-finished
 	}

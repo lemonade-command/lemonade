@@ -55,10 +55,11 @@ func (c *CLI) Server() int {
 
 type URI struct{}
 
-func (u *URI) Open(uri string, _ *struct{}) error {
+func (u *URI) Open(param *OpenParam, _ *struct{}) error {
 	conn := <-connCh
-	if cli.TransLoopback {
-		uri = u.translateLoopbackIP(uri, conn)
+	uri := param.URI
+	if param.TransLoopback {
+		uri = u.translateLoopbackIP(param.URI, conn)
 	}
 	return open.Run(uri)
 }
