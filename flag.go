@@ -68,7 +68,7 @@ func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
 func (c *CLI) flags() *flag.FlagSet {
 	flags := flag.NewFlagSet("lemonade", flag.ContinueOnError)
 	flags.IntVar(&c.Port, "port", 2489, "TCP port number")
-	flags.StringVar(&c.Allow, "allow", "0.0.0.0/0,::0", "Allow IP range")
+	flags.StringVar(&c.Allow, "allow", "0.0.0.0/0,::/0", "Allow IP range")
 	flags.StringVar(&c.Host, "host", "localhost", "Destination host name.")
 	flags.BoolVar(&c.Help, "help", false, "Show this message")
 	flags.BoolVar(&c.TransLoopback, "trans-loopback", true, "Translate loopback address")
