@@ -13,13 +13,13 @@ func TestCLIParse(t *testing.T) {
 		c.FlagParse(args)
 
 		if !reflect.DeepEqual(expected, *c) {
-			t.Errorf("Expected: %+v, but got %+v", expected, c)
+			t.Errorf("Expected:\n %+v, but got\n %+v", expected, c)
 		}
 	}
 
 	defaultPort := 2489
 	defaultHost := "localhost"
-	defaultAllow := "0.0.0.0/0,::0"
+	defaultAllow := "0.0.0.0/0,::/0"
 
 	assert([]string{"xdg-open", "http://example.com"}, CLI{
 		Type:           OPEN,
