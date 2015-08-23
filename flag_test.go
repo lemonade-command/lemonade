@@ -97,8 +97,8 @@ func TestCLIParse(t *testing.T) {
 		TransLocalfile: true,
 	})
 
-	assert([]string{"lemonade", "server", "--trans-loopback=false"}, CLI{
-		Type:           SERVER,
+	assert([]string{"lemonade", "open", "--trans-loopback=false"}, CLI{
+		Type:           OPEN,
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
@@ -106,8 +106,8 @@ func TestCLIParse(t *testing.T) {
 		TransLocalfile: true,
 	})
 
-	assert([]string{"lemonade", "server", "--trans-loopback=true"}, CLI{
-		Type:           SERVER,
+	assert([]string{"lemonade", "open", "--trans-loopback=true"}, CLI{
+		Type:           OPEN,
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
