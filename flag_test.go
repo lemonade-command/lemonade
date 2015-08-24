@@ -31,6 +31,16 @@ func TestCLIParse(t *testing.T) {
 		TransLocalfile: true,
 	})
 
+	assert([]string{"/usr/bin/xdg-open", "http://example.com"}, CLI{
+		Type:           OPEN,
+		Host:           defaultHost,
+		Port:           defaultPort,
+		Allow:          defaultAllow,
+		DataSource:     "http://example.com",
+		TransLoopback:  true,
+		TransLocalfile: true,
+	})
+
 	assert([]string{"xdg-open"}, CLI{
 		Type:           OPEN,
 		Host:           defaultHost,
@@ -49,7 +59,26 @@ func TestCLIParse(t *testing.T) {
 		TransLocalfile: true,
 	})
 
+	assert([]string{"/usr/bin/pbpaste", "--port", "1124"}, CLI{
+		Type:           PASTE,
+		Host:           defaultHost,
+		Port:           1124,
+		Allow:          defaultAllow,
+		TransLoopback:  true,
+		TransLocalfile: true,
+	})
+
 	assert([]string{"pbcopy", "hogefuga"}, CLI{
+		Type:           COPY,
+		Host:           defaultHost,
+		Port:           defaultPort,
+		Allow:          defaultAllow,
+		DataSource:     "hogefuga",
+		TransLoopback:  true,
+		TransLocalfile: true,
+	})
+
+	assert([]string{"/usr/bin/pbcopy", "hogefuga"}, CLI{
 		Type:           COPY,
 		Host:           defaultHost,
 		Port:           defaultPort,
