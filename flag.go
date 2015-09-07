@@ -28,10 +28,10 @@ func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
 	case regexp.MustCompile(`/?xdg-open$`).MatchString(args[0]):
 		c.Type = OPEN
 		return
-	case regexp.MustCompile(`/?pbpaste`).MatchString(args[0]):
+	case regexp.MustCompile(`/?pbpaste$`).MatchString(args[0]):
 		c.Type = PASTE
 		return
-	case regexp.MustCompile(`/?pbcopy`).MatchString(args[0]):
+	case regexp.MustCompile(`/?pbcopy$`).MatchString(args[0]):
 		c.Type = COPY
 		return
 	}
