@@ -1,61 +1,18 @@
-package main
+package server
 
 import (
 	"fmt"
-	"log"
 	"net"
-	"net/rpc"
 	"net/url"
 	"regexp"
 
-	"github.com/atotto/clipboard"
-	"github.com/pocke/go-iprange"
+	"github.com/pocke/lemonade/param"
 	"github.com/skratchdot/open-golang/open"
 )
 
-var connCh = make(chan net.Conn, 1)
-
-func (c *CLI) Server() int {
-	ra, err := iprange.New(c.Allow)
-	if err != nil {
-		c.writeError(err)
-		return RPCError
-	}
-
-	uri := &URI{}
-	rpc.Register(uri)
-	clipboard := &Clipboard{}
-	rpc.Register(clipboard)
-
-	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf(":%d", c.Port))
-	if err != nil {
-		c.writeError(err)
-		return RPCError
-	}
-	l, err := net.ListenTCP("tcp", addr)
-	if err != nil {
-		c.writeError(err)
-		return RPCError
-	}
-
-	for {
-		conn, err := l.Accept()
-		if err != nil {
-			log.Println(err)
-		}
-		log.Printf("Request from %s", conn.RemoteAddr())
-		if !ra.InlucdeConn(conn) {
-			continue
-		}
-		connCh <- conn
-		rpc.ServeConn(conn)
-	}
-	return Success
-}
-
 type URI struct{}
 
-func (u *URI) Open(param *OpenParam, _ *struct{}) error {
+func (u *URI) Open(param *param.OpenParam, _ *struct{}) error {
 	conn := <-connCh
 	uri := param.URI
 	if param.TransLoopback {
@@ -104,18 +61,4 @@ func (_ *URI) translateLoopbackIP(uri string, conn net.Conn) string {
 	}
 
 	return parsed.String()
-}
-
-type Clipboard struct{}
-
-func (_ *Clipboard) Copy(text string, _ *struct{}) error {
-	<-connCh
-	return clipboard.WriteAll(text)
-}
-
-func (_ *Clipboard) Paste(_ struct{}, resp *string) error {
-	<-connCh
-	t, err := clipboard.ReadAll()
-	*resp = t
-	return err
 }

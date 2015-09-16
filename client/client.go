@@ -1,0 +1,115 @@
+package client
+
+import (
+	"fmt"
+	"io/ioutil"
+	"net"
+	"net/http"
+	"net/rpc"
+	"os"
+
+	"github.com/pocke/lemonade/param"
+)
+
+type client struct {
+	host string
+	port int
+}
+
+func New(host string, port int) *client {
+	return &client{
+		host: host,
+		port: port,
+	}
+}
+
+var dummy = &struct{}{}
+
+func fileExists(fname string) bool {
+	_, err := os.Stat(fname)
+	return err == nil
+}
+
+func serveFile(fname string) (string, <-chan struct{}, error) {
+	l, err := net.Listen("tcp", ":0")
+	if err != nil {
+		return "", nil, err
+	}
+	finished := make(chan struct{})
+
+	go func() {
+		http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			b, err := ioutil.ReadFile(fname)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.Write(b)
+
+			w.(http.Flusher).Flush()
+			finished <- struct{}{}
+		}))
+	}()
+
+	return fmt.Sprintf("http://127.0.0.1:%d/%s", l.Addr().(*net.TCPAddr).Port, fname), finished, nil
+}
+
+func (c *client) Open(uri string, transLocalfile, transLoopback bool) error {
+	var finished <-chan struct{}
+	if transLocalfile && fileExists(uri) {
+		var err error
+		uri, finished, err = serveFile(uri)
+		if err != nil {
+			return err
+		}
+	}
+
+	err := c.withRPCClient(func(rc *rpc.Client) error {
+		p := &param.OpenParam{
+			URI:           uri,
+			TransLoopback: transLoopback || transLocalfile,
+		}
+
+		return rc.Call("URI.Open", p, dummy)
+	})
+	if err != nil {
+		return err
+	}
+
+	if finished != nil {
+		<-finished
+	}
+	return nil
+}
+
+func (c *client) Paste() (string, error) {
+	var resp string
+
+	err := c.withRPCClient(func(rc *rpc.Client) error {
+		return rc.Call("Clipboard.Paste", dummy, &resp)
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return resp, nil
+}
+
+func (c *client) Copy(text string) error {
+	return c.withRPCClient(func(rc *rpc.Client) error {
+		return rc.Call("Clipboard.Copy", text, dummy)
+	})
+}
+
+func (c *client) withRPCClient(f func(*rpc.Client) error) error {
+	rc, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
+	if err != nil {
+		return err
+	}
+
+	err = f(rc)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"io"
+
+	"github.com/pocke/lemonade/client"
+	"github.com/pocke/lemonade/server"
 )
 
 type CommandType int
@@ -56,18 +59,29 @@ func (c *CLI) Do(args []string) int {
 		return Help
 	}
 
+	lc := client.New(c.Host, c.Port)
+	var err error
+
 	switch c.Type {
 	case OPEN:
-		return c.Open()
+		err = lc.Open(c.DataSource, c.TransLocalfile, c.TransLoopback)
 	case COPY:
-		return c.Copy()
+		err = lc.Copy(c.DataSource)
 	case PASTE:
-		return c.Paste()
+		var text string
+		text, err = lc.Paste()
+		c.Out.Write([]byte(text))
 	case SERVER:
-		return c.Server()
+		err = server.Serve(c.Port, c.Allow)
 	default:
-		panic("")
+		panic("Unreachable code")
 	}
+
+	if err != nil {
+		c.writeError(err)
+		return RPCError
+	}
+	return Success
 }
 
 func (c *CLI) writeError(err error) {
