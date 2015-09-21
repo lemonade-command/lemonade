@@ -162,3 +162,12 @@ For example.
 $ ln -s /path/to/lemonade /usr/bin/xdg-open
 $ xdg-open  'http://example.com' # Same as lemonade open 'http://example.com'
 ```
+
+
+
+Links
+-------
+
+- https://speakerdeck.com/pocke/remote-utility-tool-lemonade
+- http://pocke.hatenablog.com/entry/2015/07/04/235118
+- http://pocke.hatenablog.com/entry/2015/08/23/221543
