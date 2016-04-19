@@ -12,7 +12,9 @@ Installation
 ------------
 
 ```sh
-go get github.com/pocke/lemonade
+go get -d github.com/pocke/lemonade
+cd $GOPATH/src/github.com/pocke/lemonade/
+make install
 ```
 
 Or download from [latest release](https://github.com/pocke/lemonade/releases/latest)

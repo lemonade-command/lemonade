@@ -1,8 +1,12 @@
 package main
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
-const Usage = `Usage: lemonade [options]... SUB_COMMAND [arg]
+var version string
+var Usage = fmt.Sprintf(`Usage: lemonade [options]... SUB_COMMAND [arg]
 Sub Commands:
   open [URL]                  Open URL by browser
   copy [text]                 Copy text.
@@ -16,7 +20,10 @@ Options:
   --trans-loopback=true       Translate loopback address [open subcommand only]
   --trans-localfile=true      Translate local file path  [open subcommand only]
   --help                      Show this message
-`
+
+
+Version:
+  %s`, version)
 
 func main() {
 	cli := &CLI{
