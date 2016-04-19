@@ -1,0 +1,5 @@
+linter:
+  gometalinter:
+    options:
+      disable:
+        - golint

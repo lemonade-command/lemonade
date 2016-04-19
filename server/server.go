@@ -17,11 +17,6 @@ func Serve(port int, allowIP string) error {
 		return err
 	}
 
-	uri := &URI{}
-	rpc.Register(uri)
-	clipboard := &Clipboard{}
-	rpc.Register(clipboard)
-
 	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		return err
@@ -35,6 +30,7 @@ func Serve(port int, allowIP string) error {
 		conn, err := l.Accept()
 		if err != nil {
 			log.Println(err)
+			continue
 		}
 		log.Printf("Request from %s", conn.RemoteAddr())
 		if !ra.InlucdeConn(conn) {
@@ -43,5 +39,32 @@ func Serve(port int, allowIP string) error {
 		connCh <- conn
 		rpc.ServeConn(conn)
 	}
-	return nil
+}
+
+// ServeLocal is to fall back when lemonade client can't connect server.
+// returns port number, error
+func ServeLocal() (int, error) {
+	l, err := net.Listen("tcp", "localhost:0")
+	if err != nil {
+		return 0, err
+	}
+	go func() {
+		for {
+			conn, err := l.Accept()
+			if err != nil {
+				log.Panicln(err)
+				continue
+			}
+			connCh <- conn
+			rpc.ServeConn(conn)
+		}
+	}()
+	return l.Addr().(*net.TCPAddr).Port, nil
+}
+
+func init() {
+	uri := &URI{}
+	rpc.Register(uri)
+	clipboard := &Clipboard{}
+	rpc.Register(clipboard)
 }

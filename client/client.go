@@ -3,12 +3,14 @@ package client
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"net/rpc"
 	"os"
 
 	"github.com/pocke/lemonade/param"
+	"github.com/pocke/lemonade/server"
 )
 
 type client struct {
@@ -104,7 +106,12 @@ func (c *client) Copy(text string) error {
 func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	rc, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
 	if err != nil {
-		return err
+		log.Println(err)
+		log.Println("Fall back to localhost")
+		rc, err = fallbackLocal()
+		if err != nil {
+			return err
+		}
 	}
 
 	err = f(rc)
@@ -112,4 +119,12 @@ func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 		return err
 	}
 	return nil
+}
+
+func fallbackLocal() (*rpc.Client, error) {
+	port, err := server.ServeLocal()
+	if err != nil {
+		return nil, err
+	}
+	return rpc.Dial("tcp", fmt.Sprintf("localhost:%d", port))
 }
