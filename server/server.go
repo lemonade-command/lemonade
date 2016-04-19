@@ -43,5 +43,4 @@ func Serve(port int, allowIP string) error {
 		connCh <- conn
 		rpc.ServeConn(conn)
 	}
-	return nil
 }
