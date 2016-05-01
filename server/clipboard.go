@@ -1,12 +1,15 @@
 package server
 
-import "github.com/atotto/clipboard"
+import (
+	"github.com/atotto/clipboard"
+	"github.com/pocke/lemonade/lemon"
+)
 
 type Clipboard struct{}
 
 func (_ *Clipboard) Copy(text string, _ *struct{}) error {
 	<-connCh
-	return clipboard.WriteAll(text)
+	return clipboard.WriteAll(lemon.ConvertLineEnding(text, LineEndingOpt))
 }
 
 func (_ *Clipboard) Paste(_ struct{}, resp *string) error {

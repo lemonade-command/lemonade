@@ -9,19 +9,22 @@ import (
 	"net/rpc"
 	"os"
 
+	"github.com/pocke/lemonade/lemon"
 	"github.com/pocke/lemonade/param"
 	"github.com/pocke/lemonade/server"
 )
 
 type client struct {
-	host string
-	port int
+	host       string
+	port       int
+	lineEnding string
 }
 
-func New(host string, port int) *client {
+func New(c *lemon.CLI) *client {
 	return &client{
-		host: host,
-		port: port,
+		host:       c.Host,
+		port:       c.Port,
+		lineEnding: c.LineEnding,
 	}
 }
 
@@ -94,7 +97,7 @@ func (c *client) Paste() (string, error) {
 		return "", err
 	}
 
-	return resp, nil
+	return lemon.ConvertLineEnding(resp, c.lineEnding), nil
 }
 
 func (c *client) Copy(text string) error {
@@ -108,7 +111,7 @@ func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	if err != nil {
 		log.Println(err)
 		log.Println("Fall back to localhost")
-		rc, err = fallbackLocal()
+		rc, err = c.fallbackLocal()
 		if err != nil {
 			return err
 		}
@@ -121,8 +124,9 @@ func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	return nil
 }
 
-func fallbackLocal() (*rpc.Client, error) {
+func (c *client) fallbackLocal() (*rpc.Client, error) {
 	port, err := server.ServeLocal()
+	server.LineEndingOpt = c.lineEnding
 	if err != nil {
 		return nil, err
 	}
