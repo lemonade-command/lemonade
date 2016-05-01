@@ -7,11 +7,14 @@ import (
 	"net/rpc"
 
 	"github.com/pocke/go-iprange"
+	"github.com/pocke/lemonade/lemon"
 )
 
 var connCh = make(chan net.Conn, 1)
 
-func Serve(port int, allowIP string) error {
+func Serve(c *lemon.CLI) error {
+	port := c.Port
+	allowIP := c.Allow
 	ra, err := iprange.New(allowIP)
 	if err != nil {
 		return err

@@ -9,6 +9,7 @@ import (
 	"net/rpc"
 	"os"
 
+	"github.com/pocke/lemonade/lemon"
 	"github.com/pocke/lemonade/param"
 	"github.com/pocke/lemonade/server"
 )
@@ -18,10 +19,10 @@ type client struct {
 	port int
 }
 
-func New(host string, port int) *client {
+func New(c *lemon.CLI) *client {
 	return &client{
-		host: host,
-		port: port,
+		host: c.Host,
+		port: c.Port,
 	}
 }
 

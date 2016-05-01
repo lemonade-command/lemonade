@@ -1,7 +1,7 @@
 VERSION=$(shell git describe --tags)
 
 build:
-	go build -x -ldflags "-X github.com/pocke/lemonade/lemon.Version=$(VERSION)"
+	go build -ldflags "-X github.com/pocke/lemonade/lemon.Version=$(VERSION)"
 
 install:
 	go install -ldflags "-X github.com/pocke/lemonade/lemon.Version=$(VERSION)"
