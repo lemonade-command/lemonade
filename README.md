@@ -50,7 +50,8 @@ Sub Commands:
 
 Options:
   --port=2489                 TCP port number
-  --allow="0.0.0.0/0,::0"     Allow IP Range             [Server only]
+  --line-ending               Convert Line Ending(CR/CRLF)
+  --allow="0.0.0.0/0,::/0"    Allow IP Range             [Server only]
   --host="localhost"          Destination hostname       [Client only]
   --trans-loopback=true       Translate loopback address [open subcommand only]
   --trans-localfile=true      Translate local file path  [open subcommand only]
@@ -91,6 +92,7 @@ There is configuration file at `~/.config/lemonade.toml`.
 ```toml
 port = 1234
 allow = '192.168.0.0/24'
+line-ending = 'crlf'
 ```
 
 - `port` is a listening port of TCP.
@@ -104,6 +106,7 @@ port = 1234
 host = '192.168.x.x'
 trans-loopback = true
 trans-localfile = true
+line-ending = 'crlf'
 ```
 
 - `port` is a port of server.
@@ -151,6 +154,14 @@ Because, at server, `./file.txt` doesn't exist.
 If this option is true, server receives IP address of client. And client serve the local file.
 So, server can open the local file!
 
+
+### line-ending
+
+Default: "" (NONE)
+
+This options works with `copy` and `paste` command only.
+
+If this option is `lf` or `crlf`, lemonade converts the line ending of text to the specified.
 
 
 ### Alias
