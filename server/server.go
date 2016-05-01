@@ -12,12 +12,12 @@ import (
 
 var connCh = make(chan net.Conn, 1)
 
-var lineEndingOpt string
+var LineEndingOpt string
 
 func Serve(c *lemon.CLI) error {
 	port := c.Port
 	allowIP := c.Allow
-	lineEndingOpt = c.LineEnding
+	LineEndingOpt = c.LineEnding
 	ra, err := iprange.New(allowIP)
 	if err != nil {
 		return err

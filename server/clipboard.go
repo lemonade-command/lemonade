@@ -9,7 +9,7 @@ type Clipboard struct{}
 
 func (_ *Clipboard) Copy(text string, _ *struct{}) error {
 	<-connCh
-	return clipboard.WriteAll(lemon.ConvertLineEnding(text, lineEndingOpt))
+	return clipboard.WriteAll(lemon.ConvertLineEnding(text, LineEndingOpt))
 }
 
 func (_ *Clipboard) Paste(_ struct{}, resp *string) error {

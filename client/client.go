@@ -111,7 +111,7 @@ func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	if err != nil {
 		log.Println(err)
 		log.Println("Fall back to localhost")
-		rc, err = fallbackLocal()
+		rc, err = c.fallbackLocal()
 		if err != nil {
 			return err
 		}
@@ -124,8 +124,9 @@ func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	return nil
 }
 
-func fallbackLocal() (*rpc.Client, error) {
+func (c *client) fallbackLocal() (*rpc.Client, error) {
 	port, err := server.ServeLocal()
+	server.LineEndingOpt = c.lineEnding
 	if err != nil {
 		return nil, err
 	}
