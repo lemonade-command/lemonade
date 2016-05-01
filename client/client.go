@@ -15,14 +15,16 @@ import (
 )
 
 type client struct {
-	host string
-	port int
+	host       string
+	port       int
+	lineEnding string
 }
 
 func New(c *lemon.CLI) *client {
 	return &client{
-		host: c.Host,
-		port: c.Port,
+		host:       c.Host,
+		port:       c.Port,
+		lineEnding: c.LineEnding,
 	}
 }
 
@@ -95,7 +97,7 @@ func (c *client) Paste() (string, error) {
 		return "", err
 	}
 
-	return resp, nil
+	return lemon.ConvertLineEnding(resp, c.lineEnding), nil
 }
 
 func (c *client) Copy(text string) error {
