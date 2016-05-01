@@ -1,11 +1,8 @@
-package main
+package lemon
 
-import (
-	"fmt"
-	"os"
-)
+import "fmt"
 
-var version string
+var Version string
 var Usage = fmt.Sprintf(`Usage: lemonade [options]... SUB_COMMAND [arg]
 Sub Commands:
   open [URL]                  Open URL by browser
@@ -23,13 +20,4 @@ Options:
 
 
 Version:
-  %s`, version)
-
-func main() {
-	cli := &CLI{
-		In:  os.Stdin,
-		Out: os.Stdout,
-		Err: os.Stderr,
-	}
-	os.Exit(cli.Do(os.Args))
-}
+  %s`, Version)
