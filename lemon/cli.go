@@ -39,6 +39,7 @@ type CLI struct {
 	Host           string
 	TransLoopback  bool
 	TransLocalfile bool
+	LineEnding     string
 
 	Help bool
 }

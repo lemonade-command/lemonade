@@ -12,6 +12,7 @@ Sub Commands:
 
 Options:
   --port=2489                 TCP port number
+  --line-ending               Convert Line Ending(CR/CRLF)
   --allow="0.0.0.0/0,::/0"    Allow IP Range             [Server only]
   --host="localhost"          Destination hostname       [Client only]
   --trans-loopback=true       Translate loopback address [open subcommand only]
