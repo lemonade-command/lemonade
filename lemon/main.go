@@ -1,6 +1,10 @@
 package lemon
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+	"strings"
+)
 
 var Version string
 var Usage = fmt.Sprintf(`Usage: lemonade [options]... SUB_COMMAND [arg]
@@ -22,3 +26,17 @@ Options:
 
 Version:
   %s`, Version)
+
+func ConvertLineEnding(text, option string) string {
+	switch option {
+	case "lf", "LF":
+		text = strings.Replace(text, "\r\n", "\n", -1)
+		return strings.Replace(text, "\r", "\n", -1)
+	case "crlf", "CRLF":
+		text = regexp.MustCompile(`\r(.)|\r$`).ReplaceAllString(text, "\r\n$1")
+		text = regexp.MustCompile(`([^\r])\n|^\n`).ReplaceAllString(text, "$1\r\n")
+		return text
+	default:
+		return text
+	}
+}
