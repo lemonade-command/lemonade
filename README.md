@@ -177,6 +177,24 @@ $ xdg-open  'http://example.com' # Same as lemonade open 'http://example.com'
 ```
 
 
+### Secure TCP Connection
+
+Lemonade doesn't provide encryption and authorization.
+However we can use `SSH Port forwarding` for the purpose.
+
+lemonade server
+
+```sh
+$ lemonade server -allow 127.0.0.1 &
+$ ssh -R 2489:127.0.0.1:2489 user@host
+```
+
+See:
+
+- [SSH/OpenSSH/PortForwarding - Community Help Wiki](https://help.ubuntu.com/community/SSH/OpenSSH/PortForwarding)
+- [WOW! and security? · Issue #14 · pocke/lemonade](https://github.com/pocke/lemonade/issues/14#)
+
+
 
 Links
 -------
