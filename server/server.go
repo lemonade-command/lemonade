@@ -2,9 +2,9 @@ package server
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"net/rpc"
+    log "github.com/inconshreveable/log15"
 
 	"github.com/pocke/go-iprange"
 	"github.com/pocke/lemonade/lemon"
@@ -14,7 +14,7 @@ var connCh = make(chan net.Conn, 1)
 
 var LineEndingOpt string
 
-func Serve(c *lemon.CLI) error {
+func Serve(c *lemon.CLI, logger log.Logger) error {
 	port := c.Port
 	allowIP := c.Allow
 	LineEndingOpt = c.LineEnding
@@ -35,10 +35,10 @@ func Serve(c *lemon.CLI) error {
 	for {
 		conn, err := l.Accept()
 		if err != nil {
-			log.Println(err)
+			logger.Error(err.Error())
 			continue
 		}
-		log.Printf("Request from %s", conn.RemoteAddr())
+		logger.Info("Request from " + conn.RemoteAddr().String())
 		if !ra.InlucdeConn(conn) {
 			continue
 		}
@@ -47,9 +47,9 @@ func Serve(c *lemon.CLI) error {
 	}
 }
 
-// ServeLocal is to fall back when lemonade client can't connect server.
+// ServeLocal is for fall back when lemonade client can't connect to server.
 // returns port number, error
-func ServeLocal() (int, error) {
+func ServeLocal(logger log.Logger) (int, error) {
 	l, err := net.Listen("tcp", "localhost:0")
 	if err != nil {
 		return 0, err
@@ -58,7 +58,7 @@ func ServeLocal() (int, error) {
 		for {
 			conn, err := l.Accept()
 			if err != nil {
-				log.Panicln(err)
+				logger.Crit(err.Error())
 				continue
 			}
 			connCh <- conn
