@@ -1,3 +1,4 @@
+
 Lemonade
 ========
 
@@ -7,6 +8,12 @@ Lemonade is a remote utility tool.
 (copy, paste and open browser) over TCP.
 
 [![Build Status](https://travis-ci.org/pocke/lemonade.svg?branch=master)](https://travis-ci.org/pocke/lemonade)
+
+Maintainers wanted
+==========
+
+See https://github.com/pocke/lemonade/issues/25
+
 
 Installation
 ------------
