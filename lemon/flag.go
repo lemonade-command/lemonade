@@ -10,7 +10,7 @@ import (
 	"github.com/monochromegane/conflag"
 )
 
-func (c *CLI) FlagParse(args []string) error {
+func (c *CLI) FlagParse(args []string, skip bool) error {
 	style, err := c.getCommandType(args)
 	if err != nil {
 		return err
@@ -19,7 +19,7 @@ func (c *CLI) FlagParse(args []string) error {
 		args = args[:len(args)-1]
 	}
 
-	return c.parse(args)
+	return c.parse(args, skip)
 }
 
 func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
@@ -78,11 +78,11 @@ func (c *CLI) flags() *flag.FlagSet {
 	return flags
 }
 
-func (c *CLI) parse(args []string) error {
+func (c *CLI) parse(args []string, skip bool) error {
 	flags := c.flags()
 
 	confPath, err := homedir.Expand("~/.config/lemonade.toml")
-	if err == nil {
+	if err == nil && !skip {
 		if confArgs, err := conflag.ArgsFrom(confPath); err == nil {
 			flags.Parse(confArgs)
 		}

@@ -10,7 +10,7 @@ func TestCLIParse(t *testing.T) {
 	assert := func(args []string, expected CLI) {
 		expected.In = os.Stdin
 		c := &CLI{In: os.Stdin}
-		c.FlagParse(args)
+		c.FlagParse(args, true)
 
 		if !reflect.DeepEqual(expected, *c) {
 			t.Errorf("Expected:\n %+v, but got\n %+v", expected, c)

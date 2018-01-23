@@ -20,7 +20,7 @@ func main() {
 }
 
 func Do(c *lemon.CLI, args []string) int {
-	if err := c.FlagParse(args); err != nil {
+	if err := c.FlagParse(args, false); err != nil {
 		writeError(c, err)
 		return lemon.FlagParseError
 	}
