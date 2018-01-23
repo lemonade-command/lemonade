@@ -161,4 +161,25 @@ func TestCLIParse(t *testing.T) {
 		TransLoopback:  true,
 		TransLocalfile: true,
 	})
+
+	assert([]string{"lemonade", "copy", "--no-fallback-messages", "hogefuga"}, CLI{
+		Type:               COPY,
+		Host:               defaultHost,
+		Port:               defaultPort,
+		Allow:              defaultAllow,
+		DataSource:         "hogefuga",
+		TransLoopback:      true,
+		TransLocalfile:     true,
+		NoFallbackMessages: true,
+	})
+
+	assert([]string{"lemonade", "paste", "--no-fallback-messages"}, CLI{
+		Type:               PASTE,
+		Host:               defaultHost,
+		Port:               defaultPort,
+		Allow:              defaultAllow,
+		TransLoopback:      true,
+		TransLocalfile:     true,
+		NoFallbackMessages: true,
+	})
 }

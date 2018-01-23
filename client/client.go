@@ -15,16 +15,18 @@ import (
 )
 
 type client struct {
-	host       string
-	port       int
-	lineEnding string
+	host               string
+	port               int
+	lineEnding         string
+	noFallbackMessages bool
 }
 
 func New(c *lemon.CLI) *client {
 	return &client{
-		host:       c.Host,
-		port:       c.Port,
-		lineEnding: c.LineEnding,
+		host:               c.Host,
+		port:               c.Port,
+		lineEnding:         c.LineEnding,
+		noFallbackMessages: c.NoFallbackMessages,
 	}
 }
 
@@ -109,8 +111,10 @@ func (c *client) Copy(text string) error {
 func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	rc, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
 	if err != nil {
-		log.Println(err)
-		log.Println("Fall back to localhost")
+		if !c.noFallbackMessages {
+			log.Println(err)
+			log.Println("Fall back to localhost")
+		}
 		rc, err = c.fallbackLocal()
 		if err != nil {
 			return err

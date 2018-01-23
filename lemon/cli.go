@@ -42,4 +42,6 @@ type CLI struct {
 	LineEnding     string
 
 	Help bool
+
+	NoFallbackMessages bool
 }
