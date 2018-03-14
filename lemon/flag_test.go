@@ -10,7 +10,7 @@ func TestCLIParse(t *testing.T) {
 	assert := func(args []string, expected CLI) {
 		expected.In = os.Stdin
 		c := &CLI{In: os.Stdin}
-		c.FlagParse(args)
+		c.FlagParse(args, true)
 
 		if !reflect.DeepEqual(expected, *c) {
 			t.Errorf("Expected:\n %+v, but got\n %+v", expected, c)
@@ -160,5 +160,26 @@ func TestCLIParse(t *testing.T) {
 		Allow:          defaultAllow,
 		TransLoopback:  true,
 		TransLocalfile: true,
+	})
+
+	assert([]string{"lemonade", "copy", "--no-fallback-messages", "hogefuga"}, CLI{
+		Type:               COPY,
+		Host:               defaultHost,
+		Port:               defaultPort,
+		Allow:              defaultAllow,
+		DataSource:         "hogefuga",
+		TransLoopback:      true,
+		TransLocalfile:     true,
+		NoFallbackMessages: true,
+	})
+
+	assert([]string{"lemonade", "paste", "--no-fallback-messages"}, CLI{
+		Type:               PASTE,
+		Host:               defaultHost,
+		Port:               defaultPort,
+		Allow:              defaultAllow,
+		TransLoopback:      true,
+		TransLocalfile:     true,
+		NoFallbackMessages: true,
 	})
 }
