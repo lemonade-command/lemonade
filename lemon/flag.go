@@ -74,8 +74,9 @@ func (c *CLI) flags() *flag.FlagSet {
 	flags.BoolVar(&c.Help, "help", false, "Show this message")
 	flags.BoolVar(&c.TransLoopback, "trans-loopback", true, "Translate loopback address")
 	flags.BoolVar(&c.TransLocalfile, "trans-localfile", true, "Translate local file")
+	flags.StringVar(&c.LineEnding, "line-ending", "", "Convert Line Endings (CR/CRLF)")
 	flags.BoolVar(&c.NoFallbackMessages, "no-fallback-messages", false, "Do not show fallback messages")
-	flags.StringVar(&c.LineEnding, "line-ending", "", "Convert Line Ending(CR/CRLF)")
+	flags.IntVar(&c.LogLevel, "log-level", 1, "Log level")
 	return flags
 }
 

@@ -40,6 +40,7 @@ type CLI struct {
 	TransLoopback  bool
 	TransLocalfile bool
 	LineEnding     string
+	LogLevel       int
 
 	Help bool
 

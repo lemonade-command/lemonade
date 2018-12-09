@@ -3,11 +3,12 @@ package client
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"net/rpc"
 	"os"
+
+	log "github.com/inconshreveable/log15"
 
 	"github.com/lemonade-command/lemonade/lemon"
 	"github.com/lemonade-command/lemonade/param"
@@ -19,14 +20,16 @@ type client struct {
 	port               int
 	lineEnding         string
 	noFallbackMessages bool
+	logger             log.Logger
 }
 
-func New(c *lemon.CLI) *client {
+func New(c *lemon.CLI, logger log.Logger) *client {
 	return &client{
 		host:               c.Host,
 		port:               c.Port,
 		lineEnding:         c.LineEnding,
 		noFallbackMessages: c.NoFallbackMessages,
+		logger:             logger,
 	}
 }
 
@@ -71,6 +74,7 @@ func (c *client) Open(uri string, transLocalfile, transLoopback bool) error {
 		}
 	}
 
+	c.logger.Info("Opening " + uri)
 	err := c.withRPCClient(func(rc *rpc.Client) error {
 		p := &param.OpenParam{
 			URI:           uri,
@@ -103,6 +107,7 @@ func (c *client) Paste() (string, error) {
 }
 
 func (c *client) Copy(text string) error {
+	c.logger.Debug("Sending: " + text)
 	return c.withRPCClient(func(rc *rpc.Client) error {
 		return rc.Call("Clipboard.Copy", text, dummy)
 	})
@@ -112,8 +117,8 @@ func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	rc, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
 	if err != nil {
 		if !c.noFallbackMessages {
-			log.Println(err)
-			log.Println("Fall back to localhost")
+			c.logger.Error(err.Error())
+			c.logger.Error("Falling back to localhost")
 		}
 		rc, err = c.fallbackLocal()
 		if err != nil {
@@ -129,7 +134,7 @@ func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 }
 
 func (c *client) fallbackLocal() (*rpc.Client, error) {
-	port, err := server.ServeLocal()
+	port, err := server.ServeLocal(c.logger)
 	server.LineEndingOpt = c.lineEnding
 	if err != nil {
 		return nil, err
