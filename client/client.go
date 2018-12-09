@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"net/rpc"
 	"os"
-    log "github.com/inconshreveable/log15"
+
+	log "github.com/inconshreveable/log15"
 
 	"github.com/pocke/lemonade/lemon"
 	"github.com/pocke/lemonade/param"
@@ -18,7 +19,7 @@ type client struct {
 	host       string
 	port       int
 	lineEnding string
-    logger     log.Logger
+	logger     log.Logger
 }
 
 func New(c *lemon.CLI, logger log.Logger) *client {
@@ -26,7 +27,7 @@ func New(c *lemon.CLI, logger log.Logger) *client {
 		host:       c.Host,
 		port:       c.Port,
 		lineEnding: c.LineEnding,
-        logger:     logger,
+		logger:     logger,
 	}
 }
 
@@ -71,7 +72,7 @@ func (c *client) Open(uri string, transLocalfile, transLoopback bool) error {
 		}
 	}
 
-    c.logger.Info("Opening " + uri)
+	c.logger.Info("Opening " + uri)
 	err := c.withRPCClient(func(rc *rpc.Client) error {
 		p := &param.OpenParam{
 			URI:           uri,
@@ -104,7 +105,7 @@ func (c *client) Paste() (string, error) {
 }
 
 func (c *client) Copy(text string) error {
-    c.logger.Debug("Sending: " + text)
+	c.logger.Debug("Sending: " + text)
 	return c.withRPCClient(func(rc *rpc.Client) error {
 		return rc.Call("Clipboard.Copy", text, dummy)
 	})

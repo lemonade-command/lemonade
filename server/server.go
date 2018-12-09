@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"net"
 	"net/rpc"
-    log "github.com/inconshreveable/log15"
+
+	log "github.com/inconshreveable/log15"
 
 	"github.com/pocke/go-iprange"
 	"github.com/pocke/lemonade/lemon"

@@ -9,7 +9,7 @@ type Clipboard struct{}
 
 func (_ *Clipboard) Copy(text string, _ *struct{}) error {
 	<-connCh
-    // Logger instance needs to be passed here somehow?
+	// Logger instance needs to be passed here somehow?
 	return clipboard.WriteAll(lemon.ConvertLineEnding(text, LineEndingOpt))
 }
 
