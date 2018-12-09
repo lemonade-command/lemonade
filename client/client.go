@@ -9,9 +9,9 @@ import (
 	"net/rpc"
 	"os"
 
-	"github.com/pocke/lemonade/lemon"
-	"github.com/pocke/lemonade/param"
-	"github.com/pocke/lemonade/server"
+	"github.com/lemonade-command/lemonade/lemon"
+	"github.com/lemonade-command/lemonade/param"
+	"github.com/lemonade-command/lemonade/server"
 )
 
 type client struct {
