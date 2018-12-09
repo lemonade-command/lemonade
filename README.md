@@ -7,24 +7,24 @@ remote...lemote...lemode......Lemonade!!! :lemon: :lemon:
 Lemonade is a remote utility tool.
 (copy, paste and open browser) over TCP.
 
-[![Build Status](https://travis-ci.org/pocke/lemonade.svg?branch=master)](https://travis-ci.org/pocke/lemonade)
+[![Build Status](https://travis-ci.org/lemonade-command/lemonade.svg?branch=master)](https://travis-ci.org/lemonade-command/lemonade)
 
 Maintainers wanted
 ==========
 
-See https://github.com/pocke/lemonade/issues/25
+See https://github.com/lemonade-command/lemonade/issues/25
 
 
 Installation
 ------------
 
 ```sh
-go get -d github.com/pocke/lemonade
-cd $GOPATH/src/github.com/pocke/lemonade/
+go get -d github.com/lemonade-command/lemonade
+cd $GOPATH/src/github.com/lemonade-command/lemonade/
 make install
 ```
 
-Or download from [latest release](https://github.com/pocke/lemonade/releases/latest)
+Or download from [latest release](https://github.com/lemonade-command/lemonade/releases/latest)
 
 
 Example of use
@@ -200,7 +200,7 @@ $ ssh -R 2489:127.0.0.1:2489 user@host
 See:
 
 - [SSH/OpenSSH/PortForwarding - Community Help Wiki](https://help.ubuntu.com/community/SSH/OpenSSH/PortForwarding)
-- [WOW! and security? · Issue #14 · pocke/lemonade](https://github.com/pocke/lemonade/issues/14#)
+- [WOW! and security? · Issue #14 · lemonade-command/lemonade](https://github.com/lemonade-command/lemonade/issues/14#)
 
 
 

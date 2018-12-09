@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pocke/lemonade/client"
-	"github.com/pocke/lemonade/lemon"
-	"github.com/pocke/lemonade/server"
+	"github.com/lemonade-command/lemonade/client"
+	"github.com/lemonade-command/lemonade/lemon"
+	"github.com/lemonade-command/lemonade/server"
 )
 
 func main() {

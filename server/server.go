@@ -6,8 +6,8 @@ import (
 	"net"
 	"net/rpc"
 
+	"github.com/lemonade-command/lemonade/lemon"
 	"github.com/pocke/go-iprange"
-	"github.com/pocke/lemonade/lemon"
 )
 
 var connCh = make(chan net.Conn, 1)
