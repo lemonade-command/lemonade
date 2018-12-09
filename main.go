@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	log "github.com/inconshreveable/log15"
 	"os"
 
-	"github.com/pocke/lemonade/client"
-	"github.com/pocke/lemonade/lemon"
-	"github.com/pocke/lemonade/server"
+	log "github.com/inconshreveable/log15"
+
+	"github.com/lemonade-command/lemonade/client"
+	"github.com/lemonade-command/lemonade/lemon"
+	"github.com/lemonade-command/lemonade/server"
 )
 
 var logLevelMap = map[int]log.Lvl{
@@ -32,8 +33,7 @@ func Do(c *lemon.CLI, args []string) int {
 	logger := log.New()
 	logger.SetHandler(log.LvlFilterHandler(log.LvlError, log.StdoutHandler))
 
-	if err := c.FlagParse(args); err != nil {
-		logger.Error("Invalid flags")
+	if err := c.FlagParse(args, false); err != nil {
 		writeError(c, err)
 		return lemon.FlagParseError
 	}

@@ -1,3 +1,4 @@
+
 Lemonade
 ========
 
@@ -6,18 +7,24 @@ remote...lemote...lemode......Lemonade!!! :lemon: :lemon:
 Lemonade is a remote utility tool.
 (copy, paste and open browser) over TCP.
 
-[![Build Status](https://travis-ci.org/pocke/lemonade.svg?branch=master)](https://travis-ci.org/pocke/lemonade)
+[![Build Status](https://travis-ci.org/lemonade-command/lemonade.svg?branch=master)](https://travis-ci.org/lemonade-command/lemonade)
+
+Maintainers wanted
+==========
+
+See https://github.com/lemonade-command/lemonade/issues/25
+
 
 Installation
 ------------
 
 ```sh
-go get -d github.com/pocke/lemonade
-cd $GOPATH/src/github.com/pocke/lemonade/
+go get -d github.com/lemonade-command/lemonade
+cd $GOPATH/src/github.com/lemonade-command/lemonade/
 make install
 ```
 
-Or download from [latest release](https://github.com/pocke/lemonade/releases/latest)
+Or download from [latest release](https://github.com/lemonade-command/lemonade/releases/latest)
 
 
 Example of use
@@ -51,10 +58,11 @@ Sub Commands:
 Options:
   --port=2489                 TCP port number
   --line-ending               Convert Line Ending(CR/CRLF)
-  --allow="0.0.0.0/0,::/0"    Allow IP Range             [Server only]
-  --host="localhost"          Destination hostname       [Client only]
-  --trans-loopback=true       Translate loopback address [open subcommand only]
-  --trans-localfile=true      Translate local file path  [open subcommand only]
+  --allow="0.0.0.0/0,::/0"    Allow IP Range                [Server only]
+  --host="localhost"          Destination hostname          [Client only]
+  --no-fallback-messages      Do not show fallback messages [Client only]
+  --trans-loopback=true       Translate loopback address    [open subcommand only]
+  --trans-localfile=true      Translate local file path     [open subcommand only]
   --help                      Show this message
 ```
 
@@ -192,7 +200,7 @@ $ ssh -R 2489:127.0.0.1:2489 user@host
 See:
 
 - [SSH/OpenSSH/PortForwarding - Community Help Wiki](https://help.ubuntu.com/community/SSH/OpenSSH/PortForwarding)
-- [WOW! and security? · Issue #14 · pocke/lemonade](https://github.com/pocke/lemonade/issues/14#)
+- [WOW! and security? · Issue #14 · lemonade-command/lemonade](https://github.com/lemonade-command/lemonade/issues/14#)
 
 
 

@@ -43,4 +43,6 @@ type CLI struct {
 	LogLevel       int
 
 	Help bool
+
+	NoFallbackMessages bool
 }

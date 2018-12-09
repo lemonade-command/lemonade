@@ -10,24 +10,26 @@ import (
 
 	log "github.com/inconshreveable/log15"
 
-	"github.com/pocke/lemonade/lemon"
-	"github.com/pocke/lemonade/param"
-	"github.com/pocke/lemonade/server"
+	"github.com/lemonade-command/lemonade/lemon"
+	"github.com/lemonade-command/lemonade/param"
+	"github.com/lemonade-command/lemonade/server"
 )
 
 type client struct {
-	host       string
-	port       int
-	lineEnding string
-	logger     log.Logger
+	host               string
+	port               int
+	lineEnding         string
+	noFallbackMessages bool
+	logger             log.Logger
 }
 
 func New(c *lemon.CLI, logger log.Logger) *client {
 	return &client{
-		host:       c.Host,
-		port:       c.Port,
-		lineEnding: c.LineEnding,
-		logger:     logger,
+		host:               c.Host,
+		port:               c.Port,
+		lineEnding:         c.LineEnding,
+		noFallbackMessages: c.NoFallbackMessages,
+		logger:             logger,
 	}
 }
 
@@ -114,8 +116,10 @@ func (c *client) Copy(text string) error {
 func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	rc, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
 	if err != nil {
-		c.logger.Error(err.Error())
-		c.logger.Error("Falling back to localhost")
+		if !c.noFallbackMessages {
+			c.logger.Error(err.Error())
+			c.logger.Error("Falling back to localhost")
+		}
 		rc, err = c.fallbackLocal()
 		if err != nil {
 			return err
