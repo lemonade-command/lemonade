@@ -6,6 +6,7 @@ import (
 
 	log "github.com/inconshreveable/log15"
 
+	"github.com/lemonade-command/lemonade/client"
 	"github.com/lemonade-command/lemonade/lemon"
 	"github.com/lemonade-command/lemonade/server"
 )
@@ -45,9 +46,21 @@ func Do(c *lemon.CLI, args []string) int {
 		return lemon.Help
 	}
 
+	lc := client.New(c, logger)
 	var err error
 
 	switch c.Type {
+	case lemon.OPEN:
+		logger.Debug("Opening URL")
+		err = lc.Open(c.DataSource, c.TransLoopback)
+	case lemon.COPY:
+		logger.Debug("Copying text")
+		err = lc.Copy(c.DataSource)
+	case lemon.PASTE:
+		logger.Debug("Pasting text")
+		var text string
+		text, err = lc.Paste()
+		c.Out.Write([]byte(text))
 	case lemon.SERVER:
 		logger.Debug("Starting Server")
 		err = server.Serve(c, logger)
