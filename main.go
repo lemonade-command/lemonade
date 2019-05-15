@@ -52,7 +52,7 @@ func Do(c *lemon.CLI, args []string) int {
 	switch c.Type {
 	case lemon.OPEN:
 		logger.Debug("Opening URL")
-		err = lc.Open(c.DataSource, c.TransLoopback)
+		err = lc.Open(c.DataSource, c.TransLocalfile, c.TransLoopback)
 	case lemon.COPY:
 		logger.Debug("Copying text")
 		err = lc.Copy(c.DataSource)

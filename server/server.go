@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 
 	"github.com/atotto/clipboard"
 	log "github.com/inconshreveable/log15"
@@ -19,6 +20,8 @@ import (
 var logger log.Logger
 var lineEnding string
 var ra *iprange.Range
+var port int
+var path = "./files"
 
 func handleCopy(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -33,7 +36,9 @@ func handleCopy(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	clipboard.WriteAll(lemon.ConvertLineEnding(string(b), lineEnding))
+	text := lemon.ConvertLineEnding(string(b), lineEnding)
+	logger.Debug("Copy:", "text", text)
+	clipboard.WriteAll(text)
 }
 
 func handlePaste(w http.ResponseWriter, r *http.Request) {
@@ -99,6 +104,39 @@ func handleOpen(w http.ResponseWriter, r *http.Request) {
 	open.Run(uri)
 }
 
+func handleUpload(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Upload only support post", 404)
+		return
+	}
+
+	r.ParseMultipartForm(10 << 20)
+	file, handler, err := r.FormFile("uploadFile")
+	if err != nil {
+		http.Error(w, "Error Retrieving the File", 500)
+		logger.Error("Error Retrieving the File", "err", err)
+		return
+	}
+	defer file.Close()
+
+	fileBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		http.Error(w, "Error Read the File", 500)
+		logger.Error("Error Read the File", "err", err)
+		return
+	}
+
+	ioutil.WriteFile(path+"/"+handler.Filename, fileBytes, os.ModePerm)
+
+	q := r.URL.Query()
+	isOpen := q.Get("open")
+	if isOpen == "true" {
+		uri := fmt.Sprintf("http://127.0.0.1:%d/files/%s", port, handler.Filename)
+		logger.Info("Open: ", "uri", uri)
+		open.Run(uri)
+	}
+}
+
 func middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet && r.Method != http.MethodPost {
@@ -123,6 +161,7 @@ func middleware(next http.Handler) http.Handler {
 func Serve(c *lemon.CLI, _logger log.Logger) error {
 	logger = _logger
 	lineEnding = c.LineEnding
+	port = c.Port
 
 	var err error
 	ra, err = iprange.New(c.Allow)
@@ -131,9 +170,12 @@ func Serve(c *lemon.CLI, _logger log.Logger) error {
 		return err
 	}
 
+	os.MkdirAll(path, os.ModePerm)
+	http.Handle("/files/", http.StripPrefix("/files/", http.FileServer(http.Dir(path))))
 	http.Handle("/copy", middleware(http.HandlerFunc(handleCopy)))
 	http.Handle("/paste", middleware(http.HandlerFunc(handlePaste)))
 	http.Handle("/open", middleware(http.HandlerFunc(handleOpen)))
+	http.Handle("/upload", middleware(http.HandlerFunc(handleUpload)))
 	err = http.ListenAndServe(fmt.Sprintf(":%d", c.Port), nil)
 	if err != nil {
 		return err
