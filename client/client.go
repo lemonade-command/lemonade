@@ -1,13 +1,13 @@
 package client
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"net/rpc"
 	"os"
+	"time"
 
 	log "github.com/inconshreveable/log15"
 
@@ -117,36 +117,23 @@ func (c *client) Copy(text string) error {
 }
 
 func (c *client) withRPCClient(f func(*rpc.Client) error) error {
-	errC := make(chan error, 1)
-	go func() {
-		rc, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
-		if err != nil {
-			if !c.noFallbackMessages {
-				c.logger.Error(err.Error())
-				c.logger.Error("Falling back to localhost")
-			}
-			rc, err = c.fallbackLocal()
+	conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%d", c.host, c.port), c.timeout)
+	if err != nil {
+		if !c.noFallbackMessages {
+			c.logger.Error(err.Error())
+			c.logger.Error("Falling back to localhost")
 		}
-		if err != nil {
-			errC <- err
-			return
-		}
-		errC <- f(rc)
-	}()
-
-	select {
-	case err := <-errC:
-		return err
-	case <-time.After(c.timeout):
-		return errors.New("rpc timeout")
+		conn, err = c.fallbackLocal()
 	}
+	rc := rpc.NewClient(conn)
+	return f(rc)
 }
 
-func (c *client) fallbackLocal() (*rpc.Client, error) {
+func (c *client) fallbackLocal() (net.Conn, error) {
 	port, err := server.ServeLocal(c.logger)
 	server.LineEndingOpt = c.lineEnding
 	if err != nil {
 		return nil, err
 	}
-	return rpc.Dial("tcp", fmt.Sprintf("localhost:%d", port))
+	return net.Dial("tcp", fmt.Sprintf("localhost:%d", port))
 }
