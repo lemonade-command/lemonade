@@ -135,5 +135,5 @@ func (c *client) fallbackLocal() (net.Conn, error) {
 	if err != nil {
 		return nil, err
 	}
-	return net.Dial("tcp", fmt.Sprintf("localhost:%d", port))
+	return net.DialTimeout("tcp", fmt.Sprintf("localhost:%d", port), c.timeout)
 }
