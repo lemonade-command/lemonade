@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
+	"time"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/monochromegane/conflag"
@@ -76,6 +77,7 @@ func (c *CLI) flags() *flag.FlagSet {
 	flags.BoolVar(&c.TransLocalfile, "trans-localfile", true, "Translate local file")
 	flags.StringVar(&c.LineEnding, "line-ending", "", "Convert Line Endings (CR/CRLF)")
 	flags.BoolVar(&c.NoFallbackMessages, "no-fallback-messages", false, "Do not show fallback messages")
+	flags.DurationVar(&c.Timeout, "rpc-timeout", 100*time.Millisecond, "RPC timeout")
 	flags.IntVar(&c.LogLevel, "log-level", 1, "Log level")
 	return flags
 }
