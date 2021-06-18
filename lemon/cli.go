@@ -1,6 +1,9 @@
 package lemon
 
-import "io"
+import (
+	"io"
+	"time"
+)
 
 type CommandType int
 
@@ -41,6 +44,7 @@ type CLI struct {
 	TransLocalfile bool
 	LineEnding     string
 	LogLevel       int
+	Timeout        time.Duration
 
 	Help bool
 

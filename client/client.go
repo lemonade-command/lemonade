@@ -1,6 +1,7 @@
 package client
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net"
@@ -21,6 +22,7 @@ type client struct {
 	lineEnding         string
 	noFallbackMessages bool
 	logger             log.Logger
+	timeout            time.Duration
 }
 
 func New(c *lemon.CLI, logger log.Logger) *client {
@@ -30,6 +32,7 @@ func New(c *lemon.CLI, logger log.Logger) *client {
 		lineEnding:         c.LineEnding,
 		noFallbackMessages: c.NoFallbackMessages,
 		logger:             logger,
+		timeout:            c.Timeout,
 	}
 }
 
@@ -114,23 +117,29 @@ func (c *client) Copy(text string) error {
 }
 
 func (c *client) withRPCClient(f func(*rpc.Client) error) error {
-	rc, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
-	if err != nil {
-		if !c.noFallbackMessages {
-			c.logger.Error(err.Error())
-			c.logger.Error("Falling back to localhost")
-		}
-		rc, err = c.fallbackLocal()
+	errC := make(chan error, 1)
+	go func() {
+		rc, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
 		if err != nil {
-			return err
+			if !c.noFallbackMessages {
+				c.logger.Error(err.Error())
+				c.logger.Error("Falling back to localhost")
+			}
+			rc, err = c.fallbackLocal()
 		}
-	}
+		if err != nil {
+			errC <- err
+			return
+		}
+		errC <- f(rc)
+	}()
 
-	err = f(rc)
-	if err != nil {
+	select {
+	case err := <-errC:
 		return err
+	case <-time.After(c.timeout):
+		return errors.New("rpc timeout")
 	}
-	return nil
 }
 
 func (c *client) fallbackLocal() (*rpc.Client, error) {
