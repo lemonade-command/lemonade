@@ -4,7 +4,7 @@ Lemonade
 
 remote...lemote...lemode......Lemonade!!! :lemon: :lemon:
 
-Lemonade is a remote utility tool.
+Lemonade is a remote clipping tool
 (copy, paste and open browser) over TCP.
 
 [![Build Status](https://travis-ci.org/lemonade-command/lemonade.svg?branch=master)](https://travis-ci.org/lemonade-command/lemonade)
@@ -20,7 +20,7 @@ Installation
 
 ```sh
 go get -d github.com/lemonade-command/lemonade
-cd $GOPATH/src/github.com/lemonade-command/lemonade/
+cd "$GOPATH/src/github.com/lemonade-command/lemonade/"
 make install
 ```
 
@@ -32,16 +32,18 @@ Example of use
 
 ![Example](http://f.st-hatena.com/images/fotolife/P/Pocke/20150823/20150823173041.gif)
 
-For example, you use a Linux as a virtual machine on Windows host.
-You connect to Linux by SSH client(e.g. PuTTY).
+Let's say you use a Linux virtual machine on a Windows host.
+You connect to Linux with an SSH client (e.g. PuTTY).
 When you want to copy text of a file on Linux to Windows, what do you do?
-One solution is doing `cat file.txt` and drag displayed text.
-But this answer is NOT elegant! Because your hand leaves from the keyboard to use the mouse.
 
-Another solution is using the Lemonade.
-You input `cat file.txt | lemonade copy`. Then, lemonade copies text of the file to clipboard of the Windows!
+One solution is `cat file.txt` and dragging the displayed text.
+But this is inconvenient as your hand leaves the keyboard to use the mouse.
 
-In addition to the above, lemonade supports pasting and opening URL.
+Another solution is using Lemonade.
+You input `cat file.txt | lemonade copy`.
+Then, lemonade copies text of the file to the clipboard in Windows!
+
+In addition to the above, lemonade supports pasting and opening URLs.
 
 
 Usage
@@ -67,24 +69,24 @@ Options:
 ```
 
 
-### On server (in the above, Windows)
+### On the Server (in the above, Windows)
 
 ```sh
 $ lemonade server
 ```
 
 
-### Client (in the above, Linux)
+### On the Client (in the above, Linux)
 
 
 ```sh
-# You want to copy a text
+# To copy text
 $ cat file.txt | lemonade copy
 
-# You want to paste a text from the clipboard of Windows
+# To paste text from the clipboard of Windows
 $ lemonade paste
 
-# You want to open an URL to a browser on Windows.
+# To open an URL in a browser on Windows.
 $ lemonade open 'http://google.com'
 ```
 
@@ -92,8 +94,8 @@ $ lemonade open 'http://google.com'
 Configuration
 ---------------
 
-You can override command line options by configuration file.
-There is configuration file at `~/.config/lemonade.toml`.
+You can override command line options through a configuration file,
+which resides at `~/.config/lemonade.toml`.
 
 ### Server
 
@@ -133,49 +135,50 @@ Advanced Usage
 
 Default: true
 
-This option works with `open` command only.
+This option only affects the `open` command.
 
-If this option is true, lemonade translates loopback address to address of client.
+If this option is true, lemonade translates the loopback address to the address of client.
 
-For example, you input `lemonade open 'http://127.0.0.1:8000'`.
+Let's say you input `lemonade open 'http://127.0.0.1:8000'`.
 If this option is false, server receives loopback address.
 But this isn't expected.
 Because, at server, loopback address is server itself.
 
-If this option is true, server receives IP address of client.
-So, server can open URL!
+If this option is true, the server receives the IP address of client.
+So, server can open the URL!
 
 
 ### trans-localfile
 
 Default: true
 
-This option works with `open` command only.
+This option only affects the `open` command.
 
-If this option is true, lemonade translates path of local file to address of client.
+If this option is true, lemonade translates path of local files to the address of client.
 
-For example, you input `lemonade open ./file.txt`.
-If this option is false, server receives `./file.txt`.
+Let's say you input `lemonade open ./file.txt`.
+If this option is false, the server receives `./file.txt`.
 But this isn't expected.
-Because, at server, `./file.txt` doesn't exist.
+Because, on the server, `./file.txt` doesn't exist.
 
-If this option is true, server receives IP address of client. And client serve the local file.
-So, server can open the local file!
+If this option is true, the server receives the IP address of client.
+And the client serves the local file.
+So, the server can open the local file!
 
 
 ### line-ending
 
 Default: "" (NONE)
 
-This options works with `copy` and `paste` command only.
+This option only affects the `copy` and `paste` commands.
 
-If this option is `lf` or `crlf`, lemonade converts the line ending of text to the specified.
+If this option is `lf` or `crlf`,
+lemonade converts the line ending of text to the specified one.
 
 
 ### Alias
 
-You can use lemonade as a `xdg-open`, `pbcopy` and `pbpaste`.
-
+You can use lemonade as drop-in for `xdg-open`, `pbcopy` and `pbpaste`.
 
 For example.
 
@@ -187,8 +190,8 @@ $ xdg-open  'http://example.com' # Same as lemonade open 'http://example.com'
 
 ### Secure TCP Connection
 
-Lemonade doesn't provide encryption and authorization.
-However we can use `SSH Port forwarding` for the purpose.
+Lemonade does not provide encryption and authorization.
+However we can use `SSH Port forwarding` for that purpose.
 
 lemonade server
 
