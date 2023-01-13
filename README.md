@@ -24,6 +24,12 @@ cd $GOPATH/src/github.com/lemonade-command/lemonade/
 make install
 ```
 
+Or run `go install`.
+
+```sh
+go install github.com/lemonade-command/lemonade@latest
+```
+
 Or download from [latest release](https://github.com/lemonade-command/lemonade/releases/latest)
 
 
