@@ -4,6 +4,7 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestCLIParse(t *testing.T) {
@@ -21,16 +22,19 @@ func TestCLIParse(t *testing.T) {
 	defaultHost := "localhost"
 	defaultAllow := "0.0.0.0/0,::/0"
 	defaultLogLevel := 1
+	defaultTimeout := time.Duration(1e8)
 
 	assert([]string{"xdg-open", "http://example.com"}, CLI{
 		Type:           OPEN,
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		DataSource:     "http://example.com",
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"/usr/bin/xdg-open", "http://example.com"}, CLI{
@@ -38,10 +42,12 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		DataSource:     "http://example.com",
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"xdg-open"}, CLI{
@@ -49,9 +55,11 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"pbpaste", "--port", "1124"}, CLI{
@@ -59,9 +67,11 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           1124,
 		Allow:          defaultAllow,
+		Socket:         false,
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"/usr/bin/pbpaste", "--port", "1124"}, CLI{
@@ -69,9 +79,11 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           1124,
 		Allow:          defaultAllow,
+		Socket:         false,
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"pbcopy", "hogefuga"}, CLI{
@@ -79,10 +91,12 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		DataSource:     "hogefuga",
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"/usr/bin/pbcopy", "hogefuga"}, CLI{
@@ -90,10 +104,12 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		DataSource:     "hogefuga",
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"lemonade", "--host", "192.168.0.1", "--port", "1124", "open", "http://example.com"}, CLI{
@@ -101,10 +117,12 @@ func TestCLIParse(t *testing.T) {
 		Host:           "192.168.0.1",
 		Port:           1124,
 		Allow:          defaultAllow,
+		Socket:         false,
 		DataSource:     "http://example.com",
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"lemonade", "copy", "hogefuga"}, CLI{
@@ -112,10 +130,12 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		DataSource:     "hogefuga",
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"lemonade", "paste"}, CLI{
@@ -123,19 +143,23 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
-	assert([]string{"lemonade", "--allow", "192.168.0.0/24", "server", "--port", "1124"}, CLI{
+	assert([]string{"lemonade", "--allow", "192.168.0.0/24", "server", "--port", "1124", "--socket"}, CLI{
 		Type:           SERVER,
 		Host:           defaultHost,
 		Port:           1124,
 		Allow:          "192.168.0.0/24",
+		Socket:         true,
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"lemonade", "open", "--trans-loopback=false"}, CLI{
@@ -143,9 +167,11 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		TransLoopback:  false,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"lemonade", "open", "--trans-loopback=true"}, CLI{
@@ -153,9 +179,11 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"lemonade", "open", "--trans-localfile=false"}, CLI{
@@ -163,9 +191,11 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		TransLoopback:  true,
 		TransLocalfile: false,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"lemonade", "open", "--trans-localfile=true"}, CLI{
@@ -173,9 +203,11 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           defaultPort,
 		Allow:          defaultAllow,
+		Socket:         false,
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
+		Timeout:        defaultTimeout,
 	})
 
 	assert([]string{"lemonade", "copy", "--no-fallback-messages", "hogefuga"}, CLI{
@@ -183,11 +215,13 @@ func TestCLIParse(t *testing.T) {
 		Host:               defaultHost,
 		Port:               defaultPort,
 		Allow:              defaultAllow,
+		Socket:             false,
 		DataSource:         "hogefuga",
 		TransLoopback:      true,
 		TransLocalfile:     true,
 		NoFallbackMessages: true,
 		LogLevel:           defaultLogLevel,
+		Timeout:            defaultTimeout,
 	})
 
 	assert([]string{"lemonade", "paste", "--no-fallback-messages"}, CLI{
@@ -195,9 +229,11 @@ func TestCLIParse(t *testing.T) {
 		Host:               defaultHost,
 		Port:               defaultPort,
 		Allow:              defaultAllow,
+		Socket:             false,
 		TransLoopback:      true,
 		TransLocalfile:     true,
 		NoFallbackMessages: true,
 		LogLevel:           defaultLogLevel,
+		Timeout:            defaultTimeout,
 	})
 }
