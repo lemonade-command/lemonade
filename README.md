@@ -59,6 +59,7 @@ Options:
   --port=2489                 TCP port number
   --line-ending               Convert Line Ending(CR/CRLF)
   --allow="0.0.0.0/0,::/0"    Allow IP Range                [Server only]
+  --socket                    Socket activation             [Server only]
   --host="localhost"          Destination hostname          [Client only]
   --no-fallback-messages      Do not show fallback messages [Client only]
   --trans-loopback=true       Translate loopback address    [open subcommand only]
@@ -203,6 +204,35 @@ See:
 - [WOW! and security? · Issue #14 · lemonade-command/lemonade](https://github.com/lemonade-command/lemonade/issues/14#)
 
 
+### Socket activation
+
+Lemonade can be activated with systemd by socket.
+
+Create the following files in `~/.config/systemd/user`.
+
+```sh
+$ cat lemonade.socket
+[Socket]
+ListenStream=127.0.0.1:2489
+Accept=no
+
+[Install]
+WantedBy=sockets.target
+```
+
+```sh
+$ cat lemonade.service
+[Unit]
+Description=remote utility tool.
+After=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/lemonade server -socket -allow 127.0.0.1
+```
+
+Enable the socket with `systemctl --user daemon-reload && systemctl --user enable --now lemonade.socket`.
+
+Now whenever a request is made on `localhost:2489` the lemonade server will start automatically.
 
 Links
 -------

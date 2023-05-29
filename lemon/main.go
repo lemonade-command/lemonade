@@ -18,6 +18,7 @@ Options:
   --port=2489                 TCP port number
   --line-ending               Convert Line Ending (CR/CRLF)
   --allow="0.0.0.0/0,::/0"    Allow IP Range                [Server only]
+  --socket                    Socket activation             [Server only]
   --host="localhost"          Destination hostname          [Client only]
   --no-fallback-messages      Do not show fallback messages [Client only]
   --trans-loopback=true       Translate loopback address    [open subcommand only]

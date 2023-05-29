@@ -39,6 +39,7 @@ type CLI struct {
 	// options
 	Port           int
 	Allow          string
+	Socket         bool
 	Host           string
 	TransLoopback  bool
 	TransLocalfile bool
