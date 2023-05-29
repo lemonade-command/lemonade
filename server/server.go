@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"net/rpc"
+	"os"
 
 	log "github.com/inconshreveable/log15"
 
@@ -24,13 +25,23 @@ func Serve(c *lemon.CLI, logger log.Logger) error {
 		return err
 	}
 
-	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf(":%d", port))
-	if err != nil {
-		return err
-	}
-	l, err := net.ListenTCP("tcp", addr)
-	if err != nil {
-		return err
+	var l net.Listener
+
+	if c.Socket {
+		listenerFile := os.NewFile(3, "listener")
+		l, err = net.FileListener(listenerFile)
+		if err != nil {
+			return err
+		}
+	} else {
+		addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf(":%d", port))
+		if err != nil {
+			return err
+		}
+		l, err = net.ListenTCP("tcp", addr)
+		if err != nil {
+			return err
+		}
 	}
 
 	for {
