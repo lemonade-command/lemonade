@@ -232,7 +232,7 @@ ExecStart=/usr/bin/lemonade server -socket -allow 127.0.0.1
 
 Enable the socket with `systemctl --user daemon-reload && systemctl --user enable --now lemonade.socket`.
 
-Now whenever a request is made on localhost:2489 the lemonade server is started automatically.
+Now whenever a request is made on `localhost:2489` the lemonade server will start automatically.
 
 Links
 -------
