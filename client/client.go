@@ -64,7 +64,12 @@ func serveFile(fname string) (string, <-chan struct{}, error) {
 		}))
 	}()
 
-	return fmt.Sprintf("http://127.0.0.1:%d/%s", l.Addr().(*net.TCPAddr).Port, fname), finished, nil
+    hostname, err := os.Hostname()
+	if err != nil {
+		return "", nil, err
+	}
+
+	return fmt.Sprintf("http://%s:%d/%s", hostname, l.Addr().(*net.TCPAddr).Port, fname), finished, nil
 }
 
 func (c *client) Open(uri string, transLocalfile, transLoopback bool) error {
