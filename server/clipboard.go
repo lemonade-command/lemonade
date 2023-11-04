@@ -1,21 +1,22 @@
 package server
 
 import (
-	"github.com/atotto/clipboard"
 	"github.com/lemonade-command/lemonade/lemon"
 )
+
+var buff string
 
 type Clipboard struct{}
 
 func (_ *Clipboard) Copy(text string, _ *struct{}) error {
 	<-connCh
 	// Logger instance needs to be passed here somehow?
-	return clipboard.WriteAll(lemon.ConvertLineEnding(text, LineEndingOpt))
+	buff = lemon.ConvertLineEnding(text, LineEndingOpt)
+    return nil
 }
 
 func (_ *Clipboard) Paste(_ struct{}, resp *string) error {
 	<-connCh
-	t, err := clipboard.ReadAll()
-	*resp = t
-	return err
+	*resp = buff 
+	return nil
 }
