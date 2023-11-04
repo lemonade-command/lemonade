@@ -10,7 +10,6 @@ type Clipboard struct{}
 
 func (_ *Clipboard) Copy(text string, _ *struct{}) error {
 	<-connCh
-	// Logger instance needs to be passed here somehow?
 	buff = lemon.ConvertLineEnding(text, LineEndingOpt)
     return nil
 }
