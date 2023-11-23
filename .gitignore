@@ -1,3 +1,5 @@
 /lemonade
 /dist/
 /pkg/
+vendor
+.DS_Store
