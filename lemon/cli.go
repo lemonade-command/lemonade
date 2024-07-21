@@ -45,6 +45,7 @@ type CLI struct {
 	LineEnding     string
 	LogLevel       int
 	Timeout        time.Duration
+	LogFile        string
 
 	Help bool
 

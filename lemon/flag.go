@@ -79,6 +79,7 @@ func (c *CLI) flags() *flag.FlagSet {
 	flags.BoolVar(&c.NoFallbackMessages, "no-fallback-messages", false, "Do not show fallback messages")
 	flags.DurationVar(&c.Timeout, "rpc-timeout", 100*time.Millisecond, "RPC timeout")
 	flags.IntVar(&c.LogLevel, "log-level", 1, "Log level")
+	flags.StringVar(&c.LogFile, "log-file", "", "Log output to a file")
 	return flags
 }
 

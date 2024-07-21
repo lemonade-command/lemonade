@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	log "github.com/inconshreveable/log15"
 
@@ -39,7 +40,15 @@ func Do(c *lemon.CLI, args []string) int {
 	}
 
 	logLevel := logLevelMap[c.LogLevel]
-	logger.SetHandler(log.LvlFilterHandler(logLevel, log.StdoutHandler))
+	logOutHandler := log.StdoutHandler
+	if len(c.LogFile) > 0 {
+		logFormat := log.LogfmtFormat()
+		if strings.HasSuffix(c.LogFile, ".json") {
+			logFormat = log.JsonFormat()
+		}
+		logOutHandler = log.Must.FileHandler(c.LogFile, logFormat)
+	}
+	logger.SetHandler(log.LvlFilterHandler(logLevel, logOutHandler))
 
 	if c.Help {
 		fmt.Fprint(c.Err, lemon.Usage)

@@ -23,6 +23,7 @@ Options:
   --trans-loopback=true       Translate loopback address    [open subcommand only]
   --trans-localfile=true      Translate local file path     [open subcommand only]
   --log-level=1               Log level                     [4 = Critical, 0 = Debug]
+  --log-file=.lemonlog[.json] Output logs to a custom file instead of stdout
   --help                      Show this message
 
 
