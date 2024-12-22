@@ -116,6 +116,27 @@ func (c *client) Copy(text string) error {
 	})
 }
 
+func (c *client) ImeOn() error {
+	c.logger.Debug("Request: ime On")
+	return c.withRPCClient(func(rc *rpc.Client) error {
+		return rc.Call("Ime.On", "dummy", dummy)
+	})
+}
+
+func (c *client) ImeOff() error {
+	c.logger.Debug("Request: ime Off")
+	return c.withRPCClient(func(rc *rpc.Client) error {
+		return rc.Call("Ime.Off", "dummy", dummy)
+	})
+}
+
+func (c *client) ImeToggle() error {
+	c.logger.Debug("Request: ime Toggle")
+	return c.withRPCClient(func(rc *rpc.Client) error {
+		return rc.Call("Ime.Toggle", "dummy", dummy)
+	})
+}
+
 func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%d", c.host, c.port), c.timeout)
 	if err != nil {

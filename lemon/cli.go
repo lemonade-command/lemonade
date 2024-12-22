@@ -13,6 +13,9 @@ const (
 	COPY
 	PASTE
 	SERVER
+  IME_ON
+  IME_OFF
+  IME_TOGGLE
 )
 
 const (

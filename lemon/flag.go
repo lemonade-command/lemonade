@@ -61,6 +61,18 @@ func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
 			c.Type = SERVER
 			del(i)
 			return
+		case "ime_on":
+			c.Type = IME_ON
+			del(i)
+			return
+		case "ime_off":
+			c.Type = IME_OFF
+			del(i)
+			return
+		case "ime_toggle":
+			c.Type = IME_TOGGLE
+			del(i)
+			return
 		}
 	}
 
@@ -97,7 +109,11 @@ func (c *CLI) parse(args []string, skip bool) error {
 	if err != nil {
 		return err
 	}
-	if c.Type == PASTE || c.Type == SERVER {
+	if c.Type == PASTE  ||
+     c.Type == SERVER ||
+     c.Type == IME_ON ||
+     c.Type == IME_OFF ||
+     c.Type == IME_TOGGLE {
 		return nil
 	}
 

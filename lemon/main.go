@@ -13,6 +13,9 @@ Sub Commands:
   copy [text]                 Copy text.
   paste                       Paste text.
   server                      Start lemonade server.
+  ime_on                      Enable IME.
+  ime_off                     Disable IME.
+  ime_toggle                  Toggle IME.
 
 Options:
   --port=2489                 TCP port number

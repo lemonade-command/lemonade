@@ -74,4 +74,6 @@ func init() {
 	rpc.Register(uri)
 	clipboard := &Clipboard{}
 	rpc.Register(clipboard)
+  ime := &Ime{}
+  rpc.Register(ime)
 }

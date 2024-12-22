@@ -64,6 +64,15 @@ func Do(c *lemon.CLI, args []string) int {
 	case lemon.SERVER:
 		logger.Debug("Starting Server")
 		err = server.Serve(c, logger)
+	case lemon.IME_ON:
+		logger.Debug("IME On")
+		err = lc.ImeOn()
+	case lemon.IME_OFF:
+		logger.Debug("IME Off")
+		err = lc.ImeOff()
+	case lemon.IME_TOGGLE:
+		logger.Debug("IME Toggle")
+		err = lc.ImeToggle()
 	default:
 		panic("Unreachable code")
 	}
