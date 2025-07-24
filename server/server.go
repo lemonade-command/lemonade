@@ -36,11 +36,15 @@ func Serve(c *lemon.CLI, logger log.Logger) error {
 	for {
 		conn, err := l.Accept()
 		if err != nil {
-			logger.Error(err.Error())
+			logger.Error("failed to accept connections", "err", err.Error())
 			continue
 		}
 		logger.Info("Request from " + conn.RemoteAddr().String())
 		if !ra.InlucdeConn(conn) {
+			logger.Error("Client denied by allow list", "ip", conn.RemoteAddr().String())
+			if err := conn.Close(); err != nil {
+				logger.Error("failed to close connection", "err", err)
+			}
 			continue
 		}
 		connCh <- conn
